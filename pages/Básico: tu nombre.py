@@ -1,6 +1,18 @@
 import streamlit as st
 import os
 import random
+import paho.mqtt.client as mqtt
+
+# Función de conexión MQTT
+def on_connect(client, userdata, flags, rc):
+    print("Conectado con código de resultado " + str(rc))
+
+# Configuración de MQTT
+mqtt_broker = "broker.mqttdashboard.com"
+mqtt_topic = "lenguaje_senas/result"
+client = mqtt.Client()
+client.on_connect = on_connect
+client.connect(mqtt_broker, 1883, 60)
 
 # Título y Subtítulo
 st.title("¡Aprende lenguaje de señas colombiano!")
@@ -85,6 +97,7 @@ for letra in letras_nombre_desordenadas:
 # Verificar si se ha ingresado el nombre y mostrar el botón "Verificar"
 if nombre:
     if st.button("Verificar"):
+        correcto = True
         for letra in nombre:
             if letra in opciones_seleccionadas:
                 opcion_seleccionada = opciones_seleccionadas[letra]
@@ -93,7 +106,14 @@ if nombre:
                 else:
                     st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
                     st.image(letras_imagenes[letra], width=170)
-
+                    correcto = False
+        
+        # Publicar el resultado en MQTT
+        if correcto:
+            client.publish(mqtt_topic, "correcto")
+        else:
+            client.publish(mqtt_topic, "incorrecto")
+        
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
         st.write("Practícalas e intenta presentarte.")
