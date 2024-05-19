@@ -7,7 +7,10 @@ import paho.mqtt.client as mqtt
 mqtt_broker = "broker.mqttdashboard.com"
 mqtt_topic = "lenguaje_senas/result"
 
-client = mqtt.Client("StreamlitClient", protocol=4)  # Especificamos la versión de la API de devolución de llamada
+# Crear el cliente MQTT especificando la versión de la API de devolución de llamada
+client = mqtt.Client("StreamlitClient", protocol=4)
+
+# Conectar con el broker MQTT
 client.connect(mqtt_broker, 1883, 60)
 
 def publicar_resultado(resultado):
@@ -109,8 +112,12 @@ if nombre:
 
         if resultado_correcto:
             publicar_resultado("correcto")
+            # Encender el LED verde y sonar la bocina en un tono agudo
+            # Código para controlar el hardware aquí
         else:
             publicar_resultado("incorrecto")
+            # Encender el LED rojo y sonar la bocina en un tono grave
+            # Código para controlar el hardware aquí
 
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
