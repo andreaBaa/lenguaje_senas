@@ -3,16 +3,15 @@ import os
 import random
 import paho.mqtt.client as mqtt
 
-# Función de conexión MQTT
-def on_connect(client, userdata, flags, rc):
-    print("Conectado con código de resultado " + str(rc))
-
-# Configuración de MQTT
+# MQTT setup
 mqtt_broker = "broker.mqttdashboard.com"
 mqtt_topic = "lenguaje_senas/result"
-client = mqtt.Client()
-client.on_connect = on_connect
+
+client = mqtt.Client("StreamlitClient")
 client.connect(mqtt_broker, 1883, 60)
+
+def publicar_resultado(resultado):
+    client.publish(mqtt_topic, resultado)
 
 # Título y Subtítulo
 st.title("¡Aprende lenguaje de señas colombiano!")
@@ -20,7 +19,7 @@ st.subheader("Básico: tu nombre")
 
 # Cuerpo de Texto
 st.write("""
-En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido. 
+En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido.
 
 *Por ejemplo:* si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas.
 """)
@@ -87,7 +86,7 @@ for letra in letras_nombre_desordenadas:
 
         # Mostrar el menú desplegable para seleccionar la letra
         with col2:
-            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget)
+            opcion_seleccionada = st.selectbox("Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget)
             opciones_seleccionadas[letra] = opcion_seleccionada
 
         contador += 1
@@ -97,7 +96,7 @@ for letra in letras_nombre_desordenadas:
 # Verificar si se ha ingresado el nombre y mostrar el botón "Verificar"
 if nombre:
     if st.button("Verificar"):
-        correcto = True
+        resultado_correcto = True
         for letra in nombre:
             if letra in opciones_seleccionadas:
                 opcion_seleccionada = opciones_seleccionadas[letra]
@@ -106,14 +105,13 @@ if nombre:
                 else:
                     st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
                     st.image(letras_imagenes[letra], width=170)
-                    correcto = False
-        
-        # Publicar el resultado en MQTT
-        if correcto:
-            client.publish(mqtt_topic, "correcto")
+                    resultado_correcto = False
+
+        if resultado_correcto:
+            publicar_resultado("correcto")
         else:
-            client.publish(mqtt_topic, "incorrecto")
-        
+            publicar_resultado("incorrecto")
+
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
         st.write("Practícalas e intenta presentarte.")
