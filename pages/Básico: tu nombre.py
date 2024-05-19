@@ -7,8 +7,11 @@ import paho.mqtt.client as mqtt
 mqtt_broker = "broker.mqttdashboard.com"
 mqtt_topic = "lenguaje_senas/result"
 
-client = mqtt.Client("StreamlitClient")
-client.connect(mqtt_broker, 1883, 60)
+try:
+    client = mqtt.Client("StreamlitClient")
+    client.connect(mqtt_broker, 1883, 60)
+except Exception as e:
+    st.error(f"Error al conectar al servidor MQTT: {e}")
 
 def publicar_resultado(resultado):
     client.publish(mqtt_topic, resultado)
@@ -101,22 +104,4 @@ if nombre:
             if letra in opciones_seleccionadas:
                 opcion_seleccionada = opciones_seleccionadas[letra]
                 if opcion_seleccionada == letra:
-                    st.success(f"¡Muy bien! Has seleccionado la letra {letra} correctamente.")
-                else:
-                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
-                    st.image(letras_imagenes[letra], width=170)
-                    resultado_correcto = False
-
-        if resultado_correcto:
-            publicar_resultado("correcto")
-        else:
-            publicar_resultado("incorrecto")
-
-        # Subtítulo y presentación del deletreo del nombre
-        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
-        st.write("Practícalas e intenta presentarte.")
-        
-        for letra in nombre:
-            if letra in letras_imagenes:
-                st.write(f"{letra}")
-                st.image(letras_imagenes[letra], width=100)
+                    st.success(f"¡Muy bien! Has seleccionado la letra {letra
