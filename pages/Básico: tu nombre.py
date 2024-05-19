@@ -7,11 +7,11 @@ import paho.mqtt.client as mqtt
 mqtt_broker = "broker.mqttdashboard.com"
 mqtt_topic = "lenguaje_senas/result"
 
-# Crear el cliente MQTT sin especificar la versión del protocolo
-client = mqtt.Client("StreamlitClient")
-
-# Conectar con el broker MQTT
-client.connect(mqtt_broker, 1883, 60)
+try:
+    client = mqtt.Client("StreamlitClient")
+    client.connect(mqtt_broker, 1883, 60)
+except Exception as e:
+    st.error(f"Error al conectar al servidor MQTT: {e}")
 
 def publicar_resultado(resultado):
     client.publish(mqtt_topic, resultado)
@@ -112,8 +112,10 @@ if nombre:
 
         if resultado_correcto:
             publicar_resultado("correcto")
+            st.write("¡Resultado correcto! Se ha publicado en el servidor MQTT.")
         else:
             publicar_resultado("incorrecto")
+            st.write("¡Resultado incorrecto! Se ha publicado en el servidor MQTT.")
 
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
