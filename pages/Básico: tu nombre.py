@@ -104,4 +104,25 @@ if nombre:
             if letra in opciones_seleccionadas:
                 opcion_seleccionada = opciones_seleccionadas[letra]
                 if opcion_seleccionada == letra:
-                    st.success(f"¡Muy bien! Has seleccionado la letra {letra
+                    st.success(f"¡Muy bien! Has seleccionado la letra {letra } correctamente.")
+                else:
+                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
+                    st.image(letras_imagenes[letra], width=170)
+                    resultado_correcto = False
+
+        if resultado_correcto:
+            publicar_resultado("correcto")
+            st.write("¡Resultado correcto! Se ha publicado en el servidor MQTT.")
+        else:
+            publicar_resultado("incorrecto")
+            st.write("¡Resultado incorrecto! Se ha publicado en el servidor MQTT.")
+
+        # Subtítulo y presentación del deletreo del nombre
+        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
+        st.write("Practícalas e intenta presentarte.")
+        
+        for letra in nombre:
+            if letra in letras_imagenes:
+                st.write(f"{letra}")
+                st.image(letras_imagenes[letra], width=100)
+
