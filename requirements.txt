@@ -1,2 +1,2 @@
-streamlit
-paho-mqtt
+streamlit==0.90.0
+paho-mqtt==1.5.1
