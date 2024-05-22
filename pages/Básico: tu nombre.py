@@ -206,3 +206,9 @@ if nombre:
 
                 st.image(letras_imagenes[letra], width=100)
 
+
+st.subheader("¡Continuemos!") 
+
+
+st.write("Ya puedes dirigirte al siguiente modulo **"Básico: Tu Propia Seña"**"
+
