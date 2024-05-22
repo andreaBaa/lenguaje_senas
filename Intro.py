@@ -1,10 +1,10 @@
 import streamlit as st
 from PIL import Image 
 
-st.title(" ¡Aprende Lenguaje de Señas Colombiano!" )
+st.title(" ¡Aprende lenguaje de señas colombiano!" )
 
 st.write("""
-### Más allá de las palabras, descubre el poder del lenguaje de señas colombiano 
+### Descubre el poder más allá de las palabras
 
 Bienvenido a nuestra plataforma de aprendizaje del Lenguaje de Señas Colombiano (LSC). 
 En Colombia y el mundo, el lenguaje de señas es una herramienta vital para la comunicación inclusiva. 
