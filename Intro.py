@@ -27,10 +27,6 @@ El Lenguaje de Señas Colombiano es la lengua materna de muchas personas sordas 
 - Ayuda a derribar barreras de comunicación y a crear una sociedad más justa.
 """)
 
-st.write("""
-
-Mira este video que te dará una visión general del Lenguaje de Señas Colombiano y te motivará en tu proceso de aprendizaje.
-""")
 video_url = "https://www.youtube.com/watch?v=tJz9iwuU6aY" 
 st.video(video_url)
 
