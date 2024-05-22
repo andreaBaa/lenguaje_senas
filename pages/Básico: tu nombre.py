@@ -97,11 +97,11 @@ if nombre:
         if respuestas_correctas:
             st.success("¡Todas las letras fueron seleccionadas correctamente!")
             # Aquí debes publicar un mensaje MQTT para encender el LED verde en el ESP32
-            publish.single("esp32/led", "verde", hostname="tu-servidor-mqtt", port=1883)
+            publish.single("esp32/led", "verde", hostname="localhost", port=1883)
         else:
             st.error("Al menos una letra fue seleccionada incorrectamente.")
             # Aquí debes publicar un mensaje MQTT para encender el LED rojo en el ESP32
-            publish.single("esp32/led", "rojo", hostname="tu-servidor-mqtt", port=1883)
+            publish.single("esp32/led", "rojo", hostname="localhost", port=1883)
 
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
@@ -111,3 +111,4 @@ if nombre:
             if letra in letras_imagenes:
                 st.write(f"{letra}")
                 st.image(letras_imagenes[letra], width=100)
+
