@@ -50,5 +50,9 @@ Crearás tu propia seña, será una forma única de ser reconocida y comunicarte
 """)
 
 
-st.write("""
-## ¡Comencemos!""")
+st.subheader("¡Continuemos!") 
+
+st.write("Ya puedes dirigirte al siguiente módulo **'Básico: Abecedario'**")
+
+st.markdown("[Siguiente módulo: Básico: Abecedario](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_abecedario)
+        
