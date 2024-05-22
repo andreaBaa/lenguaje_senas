@@ -214,6 +214,6 @@ if nombre:
         if st.button("Básico: Tu Propia Seña"):
         # Este enlace redirige al usuario a la otra página de tu repositorio
         # Cambia la URL por la correcta que lleve a "Básico: Tu Propia Seña"
-          st.markdown("[Básico: Tu Propia Seña](https://https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)")
+          st.markdown("[Siguiente módulo](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)")
 
 
