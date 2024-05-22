@@ -3,13 +3,18 @@ import os
 import random
 import paho.mqtt.client as mqtt
 
-# Configuración MQTT
-MQTT_BROKER = "broker.hivemq.com"
-MQTT_PORT = 1883
-MQTT_TOPIC = "esp32/led"
+# Configuración del cliente MQTT
+MQTT_BROKER = "test.mosquitto.org"
+MQTT_TOPIC = "streamlit/led"
 
-client = mqtt.Client("StreamlitClient")
-client.connect(MQTT_BROKER, MQTT_PORT, 60)
+client = mqtt.Client()
+
+def on_connect(client, userdata, flags, rc):
+    print(f"Connected with result code {rc}")
+
+client.on_connect = on_connect
+client.connect(MQTT_BROKER, 1883, 60)
+client.loop_start()
 
 # Título y Subtítulo
 st.title("¡Aprende lenguaje de señas colombiano!")
@@ -94,7 +99,7 @@ for letra in letras_nombre_desordenadas:
 # Verificar si se ha ingresado el nombre y mostrar el botón "Verificar"
 if nombre:
     if st.button("Verificar"):
-        all_correct = True
+        todo_correcto = True
         for letra in nombre:
             if letra in opciones_seleccionadas:
                 opcion_seleccionada = opciones_seleccionadas[letra]
@@ -103,20 +108,20 @@ if nombre:
                 else:
                     st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
                     st.image(letras_imagenes[letra], width=170)
-                    all_correct = False
+                    todo_correcto = False
         
-        if all_correct:
-            client.publish(MQTT_TOPIC, "correct")
+        # Publicar el resultado en el tópico MQTT
+        if todo_correcto:
+            client.publish(MQTT_TOPIC, "green")
         else:
-            client.publish(MQTT_TOPIC, "incorrect")
+            client.publish(MQTT_TOPIC, "red")
 
         # Subtítulo y presentación del deletreo del nombre
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
         st.write("Practícalas e intenta presentarte.")
-
+        
         for letra in nombre:
             if letra in letras_imagenes:
                 st.write(f"{letra}")
                 st.image(letras_imagenes[letra], width=100)
-
 
