@@ -210,5 +210,5 @@ if nombre:
 st.subheader("¡Continuemos!") 
 
 
-st.write("Ya puedes dirigirte al siguiente modulo **"Básico: Tu Propia Seña"**"
+st.write("Ya puedes dirigirte al siguiente modulo **"Básico: Tu Propia Seña"**")
 
