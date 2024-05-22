@@ -8,7 +8,7 @@ MQTT_BROKER = "broker.hivemq.com"
 MQTT_PORT = 1883
 MQTT_TOPIC = "esp32/led"
 
-client = mqtt.Client()
+client = mqtt.Client("StreamlitClient")
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
 
 # Título y Subtítulo
