@@ -119,3 +119,4 @@ if nombre:
                 st.write(f"{letra}")
                 st.image(letras_imagenes[letra], width=100)
 
+
