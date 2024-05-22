@@ -205,5 +205,13 @@ if nombre:
                 st.write(f"{letra}") 
 
                 st.image(letras_imagenes[letra], width=100)
+
+      
+
+        st.subheader("¡Continuemos!") 
+
+        st.write("Ya puedes dirigirte al siguiente módulo *'Básico: Tu Propia Seña'*")
+
+        st.markdown("[Siguiente módulo: Básico: Tu Propia Seña](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)", unsafe_allow_html=True)
         
 
