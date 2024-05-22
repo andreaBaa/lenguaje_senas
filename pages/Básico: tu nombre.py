@@ -207,8 +207,8 @@ if nombre:
                 st.image(letras_imagenes[letra], width=100)
 
 
-st.subheader("¡Continuemos!") 
+        st.subheader("¡Continuemos!") 
 
-st.write("Ya puedes dirigirte al siguiente módulo **'Básico: Tu Propia Seña'**")
+        st.write("Ya puedes dirigirte al siguiente módulo **'Básico: Tu Propia Seña'**")
 
 
