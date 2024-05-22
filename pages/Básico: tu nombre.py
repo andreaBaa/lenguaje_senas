@@ -1,114 +1,208 @@
-import streamlit as st
-import os
-import random
-import paho.mqtt.publish as publish
+import streamlit as st 
 
-# Título y Subtítulo
-st.title("¡Aprende lenguaje de señas colombiano!")
-st.subheader("Básico: tu nombre")
+import os 
 
-# Cuerpo de Texto
-st.write("""
-En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido.
+import random 
 
-*Por ejemplo:* si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas.
-""")
+  
 
-# Imagen
-st.image("ejemplodeletreo.png")
+# Título y Subtítulo 
 
-st.write("""
-A continuación, encontrarás un video muy corto que enseña cómo saludar, decir "mi nombre es" y el ejemplo de cómo deletrear un nombre.
-""")
+st.title("¡Aprende lenguaje de señas colombiano!") 
 
-# Video
-st.video("deletreonombre.mp4")
+st.subheader("Básico: tu nombre") 
 
-# Subtítulo y Texto
-st.subheader("¡Ponlo en práctica!")
-st.write("""
-Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a las señas de cada una de las letras de tu nombre. Con tus conocimientos previos del abecedario, identifica cada seña y elige la letra de tu nombre que le corresponde:
-""")
+  
 
-# Input para escribir el nombre
-nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper()
+# Cuerpo de Texto 
 
-# Obtener las letras únicas del nombre ingresado
-letras_nombre = set(nombre)
+st.write(""" 
 
-# Arreglo con las letras del abecedario que están contenidas en el nombre ingresado
-abecedario = sorted(list(letras_nombre))
+En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido.  
 
-# Diccionario para mapear cada letra con su imagen correspondiente
-letras_imagenes = {}
+  
 
-# Directorio donde se encuentran las imágenes
-directorio = "letras"
+Por ejemplo: si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas. 
 
-# Iterar sobre cada letra y asignarle la imagen correspondiente
-for letra in abecedario:
-    imagen = f"{letra}.png"
-    ruta_imagen = os.path.join(directorio, imagen)
-    letras_imagenes[letra] = ruta_imagen
+""") 
 
-# Mezclar las letras del nombre para mostrarlas en desorden
-letras_nombre_desordenadas = list(letras_nombre)
-random.shuffle(letras_nombre_desordenadas)
+  
 
-# Mostrar las imágenes y menús desplegables en un formato de cuadrícula
-columnas = 3
-contador = 0
+# Imagen 
 
-# Lista para almacenar las opciones seleccionadas por el usuario
-opciones_seleccionadas = {}
+st.image("ejemplodeletreo.png") 
 
-for letra in letras_nombre_desordenadas:
-    if letra in letras_imagenes:
-        # Crear una columna para la imagen y el menú desplegable
-        col1, col2 = st.columns([1, 4])
+  
 
-        # Mostrar la imagen de la letra
-        with col1:
-            st.image(letras_imagenes[letra], width=170)
+st.write(""" 
 
-        # Generar un identificador único para el menú desplegable
-        identificador_widget = f"selectbox_{letra}"
+A continuación, encontrarás un video muy corto que enseña cómo saludar, decir "mi nombre es" y el ejemplo de cómo deletrear un nombre. 
 
-        # Mostrar el menú desplegable para seleccionar la letra
-        with col2:
-            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget)
-            opciones_seleccionadas[letra] = opcion_seleccionada
+""") 
 
-        contador += 1
-        if contador % columnas == 0:
-            st.write("")  # Agregar un salto de línea después de cada fila de imágenes
+  
 
-# Verificar si se ha ingresado el nombre y mostrar el botón "Verificar"
-if nombre:
-    if st.button("Verificar"):
-        respuestas_correctas = True
-        for letra in nombre:
-            if letra in opciones_seleccionadas:
-                opcion_seleccionada = opciones_seleccionadas[letra]
-                if opcion_seleccionada != letra:
-                    respuestas_correctas = False
-                    break
+# Video 
 
-        if respuestas_correctas:
-            st.success("¡Todas las letras fueron seleccionadas correctamente!")
-            # Aquí debes publicar un mensaje MQTT para encender el LED verde en el ESP32
-            publish.single("esp32/led", "verde", hostname="localhost", port=1883)
-        else:
-            st.error("Al menos una letra fue seleccionada incorrectamente.")
-            # Aquí debes publicar un mensaje MQTT para encender el LED rojo en el ESP32
-            publish.single("esp32/led", "rojo", hostname="localhost", port=1883)
+st.video("deletreonombre.mp4") 
 
-        # Subtítulo y presentación del deletreo del nombre
-        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
-        st.write("Practícalas e intenta presentarte.")
+  
 
-        for letra in nombre:
-            if letra in letras_imagenes:
-                st.write(f"{letra}")
+# Subtítulo y Texto 
+
+st.subheader("¡Ponlo en práctica!") 
+
+st.write(""" 
+
+Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a las señas de cada una de las letras de tu nombre. Con tus conocimientos previos del abecedario, identifica cada seña y elige la letra de tu nombre que le corresponde:  
+
+""") 
+
+  
+
+# Input para escribir el nombre 
+
+nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper() 
+
+  
+
+# Obtener las letras únicas del nombre ingresado 
+
+letras_nombre = set(nombre) 
+
+  
+
+# Arreglo con las letras del abecedario que están contenidas en el nombre ingresado 
+
+abecedario = sorted(list(letras_nombre)) 
+
+  
+
+# Diccionario para mapear cada letra con su imagen correspondiente 
+
+letras_imagenes = {} 
+
+  
+
+# Directorio donde se encuentran las imágenes 
+
+directorio = "letras" 
+
+  
+
+# Iterar sobre cada letra y asignarle la imagen correspondiente 
+
+for letra in abecedario: 
+
+    imagen = f"{letra}.png" 
+
+    ruta_imagen = os.path.join(directorio, imagen) 
+
+    letras_imagenes[letra] = ruta_imagen 
+
+  
+
+# Mezclar las letras del nombre para mostrarlas en desorden 
+
+letras_nombre_desordenadas = list(letras_nombre) 
+
+random.shuffle(letras_nombre_desordenadas) 
+
+  
+
+# Mostrar las imágenes y menús desplegables en un formato de cuadrícula 
+
+columnas = 3 
+
+contador = 0 
+
+  
+
+# Lista para almacenar las opciones seleccionadas por el usuario 
+
+opciones_seleccionadas = {} 
+
+  
+
+for letra in letras_nombre_desordenadas: 
+
+    if letra in letras_imagenes: 
+
+        # Crear una columna para la imagen y el menú desplegable 
+
+        col1, col2 = st.columns([1, 4]) 
+
+  
+
+        # Mostrar la imagen de la letra 
+
+        with col1: 
+
+            st.image(letras_imagenes[letra], width=170) 
+
+  
+
+        # Generar un identificador único para el menú desplegable 
+
+        identificador_widget = f"selectbox_{letra}" 
+
+  
+
+        # Mostrar el menú desplegable para seleccionar la letra 
+
+        with col2: 
+
+            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget) 
+
+            opciones_seleccionadas[letra] = opcion_seleccionada 
+
+  
+
+        contador += 1 
+
+        if contador % columnas == 0: 
+
+            st.write("")  # Agregar un salto de línea después de cada fila de imágenes 
+
+  
+
+# Verificar si se ha ingresado el nombre y mostrar el botón "Verificar" 
+
+if nombre: 
+
+    if st.button("Verificar"): 
+
+        for letra in nombre: 
+
+            if letra in opciones_seleccionadas: 
+
+                opcion_seleccionada = opciones_seleccionadas[letra] 
+
+                if opcion_seleccionada == letra: 
+
+                    st.success(f"¡Muy bien! Has seleccionado la letra {letra} correctamente.") 
+
+                else: 
+
+                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:") 
+
+                    st.image(letras_imagenes[letra], width=170) 
+
+  
+
+        # Subtítulo y presentación del deletreo del nombre 
+
+        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:") 
+
+        st.write("Practícalas e intenta presentarte.") 
+
+         
+
+        for letra in nombre: 
+
+            if letra in letras_imagenes: 
+
+                st.write(f"{letra}") 
+
                 st.image(letras_imagenes[letra], width=100)
 
