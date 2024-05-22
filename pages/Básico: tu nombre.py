@@ -1,127 +1,78 @@
-import streamlit as st
-import os
-import random
-import paho.mqtt.client as mqtt
+#include <WiFi.h>
+#include <PubSubClient.h>
 
-# Configuración del cliente MQTT
-MQTT_BROKER = "test.mosquitto.org"
-MQTT_TOPIC = "streamlit/led"
+const char* ssid = "your_wifi_ssid";  // Cambia esto a tu SSID de WiFi
+const char* password = "your_wifi_password";  // Cambia esto a tu contraseña de WiFi
+const char* mqtt_server = "test.mosquitto.org";
 
-client = mqtt.Client()
+WiFiClient espClient;
+PubSubClient client(espClient);
 
-def on_connect(client, userdata, flags, rc):
-    print(f"Connected with result code {rc}")
+const int ledRojo = 2;  // GPIO2
+const int ledVerde = 4; // GPIO4
 
-client.on_connect = on_connect
-client.connect(MQTT_BROKER, 1883, 60)
-client.loop_start()
+void setup() {
+  pinMode(ledRojo, OUTPUT);
+  pinMode(ledVerde, OUTPUT);
 
-# Título y Subtítulo
-st.title("¡Aprende lenguaje de señas colombiano!")
-st.subheader("Básico: tu nombre")
+  Serial.begin(115200);
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
 
-# Cuerpo de Texto
-st.write("""
-En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido.
+  while (!client.connected()) {
+    Serial.print("Connecting to MQTT...");
+    if (client.connect("ESP32Client")) {
+      Serial.println("connected");
+      client.subscribe("streamlit/led");
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      delay(5000);
+    }
+  }
+}
 
-*Por ejemplo:* si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas.
-""")
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
 
-# Imagen
-st.image("ejemplodeletreo.png")
+  WiFi.begin(ssid, password);
 
-st.write("""
-A continuación, encontrarás un video muy corto que enseña cómo saludar, decir "mi nombre es" y el ejemplo de cómo deletrear un nombre.
-""")
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
 
-# Video
-st.video("deletreonombre.mp4")
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
 
-# Subtítulo y Texto
-st.subheader("¡Ponlo en práctica!")
-st.write("""
-Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a las señas de cada una de las letras de tu nombre. Con tus conocimientos previos del abecedario, identifica cada seña y elige la letra de tu nombre que le corresponde:
-""")
+void callback(char* topic, byte* payload, unsigned int length) {
+  String message;
+  for (unsigned int i = 0; i < length; i++) {
+    message += (char)payload[i];
+  }
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
+  Serial.println(message);
 
-# Input para escribir el nombre
-nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper()
+  if (message == "red") {
+    digitalWrite(ledRojo, HIGH);
+    digitalWrite(ledVerde, LOW);
+  } else if (message == "green") {
+    digitalWrite(ledRojo, LOW);
+    digitalWrite(ledVerde, HIGH);
+  }
+}
 
-# Obtener las letras únicas del nombre ingresado
-letras_nombre = set(nombre)
+void loop() {
+  client.loop();
+}
 
-# Arreglo con las letras del abecedario que están contenidas en el nombre ingresado
-abecedario = sorted(list(letras_nombre))
-
-# Diccionario para mapear cada letra con su imagen correspondiente
-letras_imagenes = {}
-
-# Directorio donde se encuentran las imágenes
-directorio = "letras"
-
-# Iterar sobre cada letra y asignarle la imagen correspondiente
-for letra in abecedario:
-    imagen = f"{letra}.png"
-    ruta_imagen = os.path.join(directorio, imagen)
-    letras_imagenes[letra] = ruta_imagen
-
-# Mezclar las letras del nombre para mostrarlas en desorden
-letras_nombre_desordenadas = list(letras_nombre)
-random.shuffle(letras_nombre_desordenadas)
-
-# Mostrar las imágenes y menús desplegables en un formato de cuadrícula
-columnas = 3
-contador = 0
-
-# Lista para almacenar las opciones seleccionadas por el usuario
-opciones_seleccionadas = {}
-
-for letra in letras_nombre_desordenadas:
-    if letra in letras_imagenes:
-        # Crear una columna para la imagen y el menú desplegable
-        col1, col2 = st.columns([1, 4])
-
-        # Mostrar la imagen de la letra
-        with col1:
-            st.image(letras_imagenes[letra], width=170)
-
-        # Generar un identificador único para el menú desplegable
-        identificador_widget = f"selectbox_{letra}"
-
-        # Mostrar el menú desplegable para seleccionar la letra
-        with col2:
-            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget)
-            opciones_seleccionadas[letra] = opcion_seleccionada
-
-        contador += 1
-        if contador % columnas == 0:
-            st.write("")  # Agregar un salto de línea después de cada fila de imágenes
-
-# Verificar si se ha ingresado el nombre y mostrar el botón "Verificar"
-if nombre:
-    if st.button("Verificar"):
-        todo_correcto = True
-        for letra in nombre:
-            if letra in opciones_seleccionadas:
-                opcion_seleccionada = opciones_seleccionadas[letra]
-                if opcion_seleccionada == letra:
-                    st.success(f"¡Muy bien! Has seleccionado la letra {letra} correctamente.")
-                else:
-                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
-                    st.image(letras_imagenes[letra], width=170)
-                    todo_correcto = False
-        
-        # Publicar el resultado en el tópico MQTT
-        if todo_correcto:
-            client.publish(MQTT_TOPIC, "green")
-        else:
-            client.publish(MQTT_TOPIC, "red")
-
-        # Subtítulo y presentación del deletreo del nombre
-        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
-        st.write("Practícalas e intenta presentarte.")
-        
-        for letra in nombre:
-            if letra in letras_imagenes:
-                st.write(f"{letra}")
-                st.image(letras_imagenes[letra], width=100)
 
