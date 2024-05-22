@@ -1,6 +1,8 @@
-python==3.9.5
-streamlit==1.8.0
+keras
+streamlit
+streamlit-webrtc
+numpy
+opencv-python-headless
+Pillow
+tensorflow==2.12
 paho-mqtt==1.6.1
-
-pip install -r requirements.txt
-
