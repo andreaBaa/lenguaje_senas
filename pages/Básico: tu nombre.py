@@ -23,11 +23,11 @@ def on_message(client, userdata, message):
 def init_mqtt():
     broker = "broker.mqttdashboard.com"
     port = 1883
-    client = paho.Client("APP")
-    client.on_message = on_message
-    client.on_publish = on_publish
-    
     try:
+        client = paho.Client("APP_CERR")
+        client.on_message = on_message
+        client.on_publish = on_publish
+        
         client.connect(broker, port)
         client.loop_start()  # Inicia el loop en segundo plano para manejar la recepción de mensajes
         print("MQTT conectado correctamente")
@@ -37,7 +37,10 @@ def init_mqtt():
     
     return client
 
-client1 = init_mqtt()
+try:
+    client1 = init_mqtt()
+except Exception as e:
+    st.error(f"Fallo en la inicialización de MQTT: {e}")
 
 # Título y Subtítulo 
 st.title("¡Aprende lenguaje de señas colombiano!") 
@@ -149,5 +152,3 @@ if nombre:
         st.subheader("¡Continuemos!") 
         st.write("Ya puedes dirigirte al siguiente módulo 'Básico: Tu Propia Seña'")
         st.markdown("[Siguiente módulo: Básico: Tu Propia Seña](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)", unsafe_allow_html=True)
-
-
