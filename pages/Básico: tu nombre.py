@@ -51,8 +51,7 @@ Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a l
 """) 
 
 # Input para escribir el nombre 
-nombre = st.text_input("Escribe # solo tu primer nombre (sin tildes)
-", key="nombre").upper() 
+nombre = st.text_input("Escribe # solo tu primer nombre (sin tildes)", key="nombre").upper())
 
 # Obtener las letras únicas del nombre ingresado 
 letras_nombre = set(nombre) 
