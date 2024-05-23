@@ -23,7 +23,7 @@ def on_message(client, userdata, message):
 def init_mqtt():
     broker = "broker.mqttdashboard.com"
     port = 1883
-    client = paho.Client("APP_CERR")
+    client = paho.Client("APP")
     client.on_message = on_message
     client.on_publish = on_publish
     
