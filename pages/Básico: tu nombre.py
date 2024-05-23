@@ -1,16 +1,14 @@
-import streamlit as st
-import os
-import random
+import streamlit as st 
+import os 
+import random 
 import paho.mqtt.client as paho
-import paho.mqtt.publish as publish
 import time
 import json
 import cv2
 import numpy as np
 
-# Funciones de callback para MQTT
-def on_publish(client, userdata, result):
-    print("El dato ha sido publicado \n")
+def on_publish(client,userdata,result):             #create function for callback
+    print("el dato ha sido publicado \n")
     pass
 
 def on_message(client, userdata, message):
@@ -19,140 +17,114 @@ def on_message(client, userdata, message):
     message_received = str(message.payload.decode("utf-8"))
     st.write(message_received)
 
-# Inicialización de MQTT
-def init_mqtt():
-    broker = "broker.mqttdashboard.com"
-    port = 1883
-    try:
-        client = paho.Client("APP_CERR")
-        client.on_message = on_message
-        client.on_publish = on_publish
-
-        client.connect(broker, port)
-        client.loop_start()  # Inicia el loop en segundo plano para manejar la recepción de mensajes
-        print("MQTT conectado correctamente")
-    except Exception as e:
-        print(f"Error conectando a MQTT: {e}")
-        st.error(f"Error conectando a MQTT: {e}")
-        return None
-    
-    return client
-
-try:
-    client1 = init_mqtt()
-    if client1 is None:
-        st.stop()  # Detener la ejecución de la aplicación si la inicialización de MQTT falla
-except Exception as e:
-    st.error(f"Fallo en la inicialización de MQTT: {e}")
-    st.stop()
+broker = "broker.mqttdashboard.com"
+port = 1883
+client1 = paho.Client("APP_CERR")
+client1.on_message = on_message
+client1.on_publish = on_publish
+client1.connect(broker, port)
 
 # Título y Subtítulo 
-st.title("¡Aprende lenguaje de señas colombiano!")
-st.subheader("Básico: tu nombre")
+st.title("¡Aprende lenguaje de señas colombiano!") 
+st.subheader("Básico: tu nombre") 
 
 # Cuerpo de Texto 
 st.write(""" 
 En la comunidad de personas sordas, la presentación de los nombres se realiza mediante el uso del alfabeto manual del lenguaje de señas, que vimos en el módulo anterior. Al presentarse, las personas sordas deletrean su nombre letra por letra utilizando cualquiera de sus dos manos. Este método de deletreo permite una comunicación clara y precisa, asegurando que el nombre sea entendido.
-Por ejemplo: si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas.
-""")
+Por ejemplo: si una persona se llama "Ana" y quiere presentarse, deletreará  "A-N-A" en lenguaje de señas. 
+""") 
 
 # Imagen 
-st.image("ejemplodeletreo.png")
+st.image("ejemplodeletreo.png") 
 
 st.write(""" 
-A continuación, encontrarás un video muy corto que enseña cómo saludar, decir "mi nombre es" y el ejemplo de cómo deletrear un nombre.
-""")
+A continuación, encontrarás un video muy corto que enseña cómo saludar, decir "mi nombre es" y el ejemplo de cómo deletrear un nombre. 
+""") 
 
 # Video 
-st.video("deletreonombre.mp4")
+st.video("deletreonombre.mp4") 
 
 # Subtítulo y Texto 
-st.subheader("¡Ponlo en práctica!")
+st.subheader("¡Ponlo en práctica!") 
 st.write(""" 
-Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a las señas de cada una de las letras de tu nombre. Con tus conocimientos previos del abecedario, identifica cada seña y elige la letra de tu nombre que le corresponde:
-""")
+Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a las señas de cada una de las letras de tu nombre. Con tus conocimientos previos del abecedario, identifica cada seña y elige la letra de tu nombre que le corresponde:  
+""") 
 
 # Input para escribir el nombre 
-nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper()
+nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper() 
 
 # Obtener las letras únicas del nombre ingresado 
-letras_nombre = set(nombre)
+letras_nombre = set(nombre) 
 
 # Arreglo con las letras del abecedario que están contenidas en el nombre ingresado 
-abecedario = sorted(list(letras_nombre))
+abecedario = sorted(list(letras_nombre)) 
 
 # Diccionario para mapear cada letra con su imagen correspondiente 
-letras_imagenes = {}
+letras_imagenes = {} 
 
 # Directorio donde se encuentran las imágenes 
-directorio = "letras"
+directorio = "letras" 
 
 # Iterar sobre cada letra y asignarle la imagen correspondiente 
-for letra in abecedario:
-    imagen = f"{letra}.png"
-    ruta_imagen = os.path.join(directorio, imagen)
-    letras_imagenes[letra] = ruta_imagen
+for letra in abecedario: 
+    imagen = f"{letra}.png" 
+    ruta_imagen = os.path.join(directorio, imagen) 
+    letras_imagenes[letra] = ruta_imagen 
 
 # Mezclar las letras del nombre para mostrarlas en desorden 
-letras_nombre_desordenadas = list(letras_nombre)
-random.shuffle(letras_nombre_desordenadas)
+letras_nombre_desordenadas = list(letras_nombre) 
+random.shuffle(letras_nombre_desordenadas) 
 
 # Mostrar las imágenes y menús desplegables en un formato de cuadrícula 
-columnas = 3
-contador = 0
+columnas = 3 
+contador = 0 
 
 # Lista para almacenar las opciones seleccionadas por el usuario 
-opciones_seleccionadas = {}
+opciones_seleccionadas = {} 
 
-for letra in letras_nombre_desordenadas:
-    if letra in letras_imagenes:
+for letra in letras_nombre_desordenadas: 
+    if letra in letras_imagenes: 
         # Crear una columna para la imagen y el menú desplegable 
-        col1, col2 = st.columns([1, 4])
+        col1, col2 = st.columns([1, 4]) 
 
         # Mostrar la imagen de la letra 
-        with col1:
-            st.image(letras_imagenes[letra], width=170)
+        with col1: 
+            st.image(letras_imagenes[letra], width=170) 
 
         # Generar un identificador único para el menú desplegable 
-        identificador_widget = f"selectbox_{letra}"
+        identificador_widget = f"selectbox_{letra}" 
 
         # Mostrar el menú desplegable para seleccionar la letra 
-        with col2:
-            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget)
-            opciones_seleccionadas[letra] = opcion_seleccionada
+        with col2: 
+            opcion_seleccionada = st.selectbox(f"Selecciona la letra de tu nombre que corresponde a la seña", [""] + abecedario, index=0, key=identificador_widget) 
+            opciones_seleccionadas[letra] = opcion_seleccionada 
 
-        contador += 1
-        if contador % columnas == 0:
-            st.write("")  # Agregar un salto de línea después de cada fila de imágenes
+        contador += 1 
+        if contador % columnas == 0: 
+            st.write("")  # Agregar un salto de línea después de cada fila de imágenes 
 
 # Verificar si se ha ingresado el nombre y mostrar el botón "Verificar" 
-if nombre:
-    if st.button("Verificar"):
-        opciones_correctas = all(opciones_seleccionadas.get(letra, "") == letra for letra in nombre)
-        for letra in nombre:
-            if letra in opciones_seleccionadas:
-                opcion_seleccionada = opciones_seleccionadas[letra]
-                if opcion_seleccionada == letra:
-                    st.success(f"¡Muy bien! Has seleccionado la letra {letra} correctamente.")
-                else:
-                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:")
-                    st.image(letras_imagenes[letra], width=170)
+if nombre: 
+    if st.button("Verificar"): 
+        opciones_correctas = all(opcion == letra for letra, opcion in opciones_seleccionadas.items())
+        for letra in nombre: 
+            if letra in opciones_seleccionadas: 
+                opcion_seleccionada = opciones_seleccionadas[letra] 
+                if opcion_seleccionada == letra: 
+                    st.success(f"¡Muy bien! Has seleccionado la letra {letra} correctamente.") 
+                else: 
+                    st.error(f"Incorrecto. La seña correcta para la letra {letra} es:") 
+                    st.image(letras_imagenes[letra], width=170) 
 
-        # Verificar selecciones del usuario y enviar mensaje MQTT
-        if opciones_correctas:
-            publish.single("nombre", "verde", hostname="broker.mqttdashboard.com")
-        else:
-            publish.single("nombre", "rojo", hostname="broker.mqttdashboard.com")
+# Subtítulo y presentación del deletreo del nombre 
+st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:") 
+st.write("Practícalas e intenta presentarte.") 
+for letra in nombre: 
+    if letra in letras_imagenes: 
+        st.write(f"{letra}") 
+        st.image(letras_imagenes[letra], width=100)
 
-        # Subtítulo y presentación del deletreo del nombre 
-        st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:")
-        st.write("Practícalas e intenta presentarte.")
+st.subheader("¡Continuemos!") 
+st.write("Ya puedes dirigirte al siguiente módulo 'Básico: Tu Propia Seña'")
+st.markdown("[Siguiente módulo: Básico: Tu Propia Seña](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)", unsafe_allow_html=True)
 
-        for letra in nombre:
-            if letra in letras_imagenes:
-                st.write(f"{letra}")
-                st.image(letras_imagenes[letra], width=100)
-
-        st.subheader("¡Continuemos!")
-        st.write("Ya puedes dirigirte al siguiente módulo 'Básico: Tu Propia Seña'")
-        st.markdown("[Siguiente módulo: Básico: Tu Propia Seña](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)", unsafe_allow_html=True)
