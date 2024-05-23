@@ -216,9 +216,9 @@ if nombre:
 opciones_correctas = all(opcion == letra for letra, opcion in opciones_seleccionadas.items())
 if nombre and opciones_seleccionadas:
     if opciones_correctas:
-        publish.single("esp32/leds", "green", hostname="broker.hivemq.com")
+        publish.single("nombre", "green", hostname="broker.mqttdashboard.com")
     else:
-        publish.single("esp32/leds", "red", hostname="broker.hivemq.com")
+        publish.single("nombre", "red", hostname="broker.mqttdashboard.com")
 
 
         
