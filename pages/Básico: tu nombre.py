@@ -212,7 +212,16 @@ if nombre:
                     st.image(letras_imagenes[letra], width=170) 
 
   
+# Verificar selecciones del usuario y enviar mensaje MQTT
+opciones_correctas = all(opcion == letra for letra, opcion in opciones_seleccionadas.items())
+if nombre and opciones_seleccionadas:
+    if opciones_correctas:
+        publish.single("esp32/leds", "green", hostname="broker.hivemq.com")
+    else:
+        publish.single("esp32/leds", "red", hostname="broker.hivemq.com")
 
+
+        
         # Subtítulo y presentación del deletreo del nombre 
 
         st.subheader("Por tanto, el deletreo de tu nombre debe verse así en lengua de señas:") 
