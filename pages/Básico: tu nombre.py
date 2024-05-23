@@ -8,8 +8,9 @@ import json
 import cv2
 import numpy as np
 
+# Definir callbacks para MQTT
 def on_publish(client, userdata, result):             
-    print("el dato ha sido publicado \n")
+    print("El dato ha sido publicado \n")
     pass
 
 def on_message(client, userdata, message):
@@ -18,12 +19,17 @@ def on_message(client, userdata, message):
     message_received = str(message.payload.decode("utf-8"))
     st.write(message_received)
 
-broker = "broker.mqttdashboard.com"
-port = 1883
-client1 = paho.Client("APP_CERR")
-client1.on_message = on_message
-client1.on_publish = on_publish
-client1.connect(broker, port)
+# Inicializar MQTT
+def init_mqtt():
+    broker = "broker.mqttdashboard.com"
+    port = 1883
+    client = paho.Client("APP_CERR")
+    client.on_message = on_message
+    client.on_publish = on_publish
+    client.connect(broker, port)
+    return client
+
+client1 = init_mqtt()
 
 # Título y Subtítulo 
 st.title("¡Aprende lenguaje de señas colombiano!") 
