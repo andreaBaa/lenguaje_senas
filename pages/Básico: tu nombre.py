@@ -7,7 +7,7 @@ import json
 import cv2
 import numpy as np
 
-def on_publish(client,userdata,result):             #create function for callback
+def on_publish(client, userdata, result):             # create function for callback
     print("el dato ha sido publicado \n")
     pass
 
@@ -51,7 +51,8 @@ Escribe tu nombre y luego verás unas imágenes en desorden que corresponden a l
 """) 
 
 # Input para escribir el nombre 
-nombre = st.text_input("Escribe solo tu primer nombre (sin tildes)", key="nombre").upper() 
+nombre = st.text_input("Escribe # solo tu primer nombre (sin tildes)
+", key="nombre").upper() 
 
 # Obtener las letras únicas del nombre ingresado 
 letras_nombre = set(nombre) 
@@ -127,4 +128,6 @@ for letra in nombre:
 st.subheader("¡Continuemos!") 
 st.write("Ya puedes dirigirte al siguiente módulo 'Básico: Tu Propia Seña'")
 st.markdown("[Siguiente módulo: Básico: Tu Propia Seña](https://aprendelenguajedesenas.streamlit.app/B%C3%A1sico:_tu_propia_se%C3%B1a)", unsafe_allow_html=True)
+
+
 
